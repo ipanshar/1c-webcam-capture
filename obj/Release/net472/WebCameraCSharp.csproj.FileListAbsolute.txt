@@ -1,0 +1,6 @@
+D:\visualStudio\Camera\obj\Release\net472\WebCameraCSharp.csproj.AssemblyReference.cache
+D:\visualStudio\Camera\obj\Release\net472\WebCameraCSharp.GeneratedMSBuildEditorConfig.editorconfig
+D:\visualStudio\Camera\obj\Release\net472\WebCameraCSharp.AssemblyInfoInputs.cache
+D:\visualStudio\Camera\obj\Release\net472\WebCameraCSharp.AssemblyInfo.cs
+D:\visualStudio\Camera\obj\Release\net472\WebCameraCSharp.csproj.CoreCompileInputs.cache
+D:\visualStudio\Camera\obj\Release\net472\WebCameraCSharp.sourcelink.json

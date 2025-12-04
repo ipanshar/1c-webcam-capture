@@ -1,10 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net472</TargetFramework>
-  </PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk. WindowsDesktop">
 
-  <ItemGroup>
-    <PackageReference Include="DirectShowLib" Version="1.0.0" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<AssemblyName>WebCameraCapture</AssemblyName>
+		<RootNamespace>WebCameraCSharp</RootNamespace>
+		<Version>1.0.0</Version>
+		<Authors>ipanshar</Authors>
+		<Description>C# DLL для захвата видео с веб-камеры для 1С:Предприятие</Description>
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+		<ComVisible>true</ComVisible>
+		<Guid>87654321-4321-4321-4321-210987654321</Guid>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DirectShowLib" Version="2.1.0" />
+	</ItemGroup>
+
 </Project>
