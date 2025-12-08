@@ -11,12 +11,13 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("WebCameraCSharp")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("ipanshar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
+[assembly: System.Reflection.AssemblyDescriptionAttribute("C# DLL для захвата видео с веб-камеры для 1С:Предприятие")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bccf30d9c68ed2d2bb1eaf0095ea3f0836ff055a")]
-[assembly: System.Reflection.AssemblyProductAttribute("WebCameraCSharp")]
-[assembly: System.Reflection.AssemblyTitleAttribute("WebCameraCSharp")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+188ed31fe13473e80b69b631039e1740c41720b3")]
+[assembly: System.Reflection.AssemblyProductAttribute("WebCameraCapture")]
+[assembly: System.Reflection.AssemblyTitleAttribute("WebCameraCapture")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.

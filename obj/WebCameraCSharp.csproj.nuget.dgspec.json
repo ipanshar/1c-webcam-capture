@@ -8,7 +8,7 @@
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "D:\\visualStudio\\Camera\\WebCameraCSharp.csproj",
-        "projectName": "WebCameraCSharp",
+        "projectName": "WebCameraCapture",
         "projectPath": "D:\\visualStudio\\Camera\\WebCameraCSharp.csproj",
         "packagesPath": "C:\\Users\\Админ\\.nuget\\packages\\",
         "outputPath": "D:\\visualStudio\\Camera\\obj\\",
@@ -46,17 +46,12 @@
         "net472": {
           "targetAlias": "net472",
           "dependencies": {
-            "DirectShowLib": {
+            "DirectShowLib.Standard": {
               "target": "Package",
-              "version": "[1.0.0, )"
+              "version": "[2.1.0, )"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win-x86": {
-          "#import": []
         }
       }
     }

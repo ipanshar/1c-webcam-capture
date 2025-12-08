@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "E/7bwwqOMLY=",
+  "dgSpecHash": "b0RhsKIoRcI=",
   "success": true,
   "projectFilePath": "D:\\visualStudio\\Camera\\WebCameraCSharp.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Админ\\.nuget\\packages\\directshowlib\\1.0.0\\directshowlib.1.0.0.nupkg.sha512"
+    "C:\\Users\\Админ\\.nuget\\packages\\directshowlib.standard\\2.1.0\\directshowlib.standard.2.1.0.nupkg.sha512"
   ],
   "logs": []
 }

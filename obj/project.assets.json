@@ -2,46 +2,42 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.2": {
-      "DirectShowLib/1.0.0": {
+      "DirectShowLib.Standard/2.1.0": {
         "type": "package",
         "compile": {
-          "lib/DirectShowLib.dll": {}
+          "lib/net45/DirectShowLib.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/DirectShowLib.dll": {}
-        }
-      }
-    },
-    ".NETFramework,Version=v4.7.2/win-x86": {
-      "DirectShowLib/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/DirectShowLib.dll": {}
-        },
-        "runtime": {
-          "lib/DirectShowLib.dll": {}
+          "lib/net45/DirectShowLib.dll": {
+            "related": ".xml"
+          }
         }
       }
     }
   },
   "libraries": {
-    "DirectShowLib/1.0.0": {
-      "sha512": "oWwOk9Lj8JIMWPsfx8bUbJ/uWhHlRKpMaU5oVf8Kl9SLMhmrnr0kXg0ebDv3oOmKxZ/D1yrmw+x7UGmgMqUxFA==",
+    "DirectShowLib.Standard/2.1.0": {
+      "sha512": "XACY5rMew2SQdPALsNaj6I3qHp9ZJ7STJhrc40x9JZXTyuLNpXte4f5nlG9yu8dez6ONJZf2ykGA2YoNT3/O/A==",
       "type": "package",
-      "path": "directshowlib/1.0.0",
+      "path": "directshowlib.standard/2.1.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "directshowlib.1.0.0.nupkg.sha512",
-        "directshowlib.nuspec",
-        "lib/DirectShowLib.dll",
-        "lib/DirectShowLib.pdb"
+        "LICENSE",
+        "directshowlib.standard.2.1.0.nupkg.sha512",
+        "directshowlib.standard.nuspec",
+        "lib/net45/DirectShowLib.dll",
+        "lib/net45/DirectShowLib.xml",
+        "lib/netstandard2.0/DirectShowLib.dll",
+        "lib/netstandard2.0/DirectShowLib.xml"
       ]
     }
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.2": [
-      "DirectShowLib >= 1.0.0"
+      "DirectShowLib.Standard >= 2.1.0"
     ]
   },
   "packageFolders": {
@@ -51,7 +47,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "D:\\visualStudio\\Camera\\WebCameraCSharp.csproj",
-      "projectName": "WebCameraCSharp",
+      "projectName": "WebCameraCapture",
       "projectPath": "D:\\visualStudio\\Camera\\WebCameraCSharp.csproj",
       "packagesPath": "C:\\Users\\Админ\\.nuget\\packages\\",
       "outputPath": "D:\\visualStudio\\Camera\\obj\\",
@@ -89,17 +85,12 @@
       "net472": {
         "targetAlias": "net472",
         "dependencies": {
-          "DirectShowLib": {
+          "DirectShowLib.Standard": {
             "target": "Package",
-            "version": "[1.0.0, )"
+            "version": "[2.1.0, )"
           }
         },
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
-      }
-    },
-    "runtimes": {
-      "win-x86": {
-        "#import": []
       }
     }
   }

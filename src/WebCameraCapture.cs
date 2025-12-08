@@ -107,6 +107,11 @@ namespace WebCameraCSharp
             }
         }
 
+        public byte[] GetLastFrameData()
+        {
+            return lastFrameData;
+        }
+
         public byte[] CaptureFrame()
         {
             try
@@ -117,16 +122,37 @@ namespace WebCameraCSharp
                     return new byte[0];
                 }
 
-                int hr = sampleGrabber.GetCurrentBuffer(ref lastFrameData, IntPtr.Zero);
+                int bufferSize = 0;
 
-                if (hr != 0)
+                // First, get the size of the buffer
+                int hr = sampleGrabber.GetCurrentBuffer(ref bufferSize, IntPtr.Zero);
+                if (hr != 0 || bufferSize <= 0)
                 {
-                    lastError = "Failed to capture frame";
+                    lastError = "Failed to get buffer size";
                     return new byte[0];
                 }
 
-                // Convert to JPEG
-                return ConvertToJpeg(lastFrameData);
+                // Allocate the buffer and retrieve the frame data
+                IntPtr bufferPtr = Marshal.AllocCoTaskMem(bufferSize);
+                try
+                {
+                    hr = sampleGrabber.GetCurrentBuffer(ref bufferSize, bufferPtr);
+                    if (hr != 0)
+                    {
+                        lastError = "Failed to capture frame";
+                        return new byte[0];
+                    }
+
+                    byte[] frameData = new byte[bufferSize];
+                    Marshal.Copy(bufferPtr, frameData, 0, bufferSize);
+
+                    // Convert to JPEG
+                    return ConvertToJpeg(frameData);
+                }
+                finally
+                {
+                    Marshal.FreeCoTaskMem(bufferPtr);
+                }
             }
             catch (Exception ex)
             {
