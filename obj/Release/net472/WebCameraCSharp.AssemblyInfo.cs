@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("C# DLL для захвата видео с веб-камеры для 1С:Предприятие")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+188ed31fe13473e80b69b631039e1740c41720b3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b8d012c15955c7c9a87e73797e500cf3badc3665")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebCameraCapture")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebCameraCapture")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

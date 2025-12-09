@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using DirectShowLib;
 
@@ -36,7 +36,7 @@ namespace WebCameraCSharp
     [ComVisible(true)]
     [Guid("87654321-4321-4321-4321-210987654321")]
     [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("WebCameraCapture. WebCameraCapture")]
+    [ProgId("WebCameraCapture.WebCameraCapture")]
     public class WebCameraCapture : IWebCameraCapture
     {
         private IFilterGraph2 filterGraph;
@@ -47,11 +47,11 @@ namespace WebCameraCSharp
         private int selectedCameraIndex = 0;
         private string lastError = "";
         private DsDevice[] videoCaptureDevices;
-        private byte[] lastFrameData;
+        private int videoWidth;
+        private int videoHeight;
 
         public WebCameraCapture()
         {
-            lastFrameData = new byte[0];
             videoCaptureDevices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
         }
 
@@ -68,34 +68,51 @@ namespace WebCameraCSharp
                 filterGraph = (IFilterGraph2)new FilterGraph();
                 mediaControl = (IMediaControl)filterGraph;
 
-                // Get the capture device
+                // Получаем выбранную камеру
                 Guid iid = typeof(IBaseFilter).GUID;
                 object obj;
                 videoCaptureDevices[selectedCameraIndex].Mon.BindToObject(null, null, ref iid, out obj);
                 captureFilter = (IBaseFilter)obj;
 
-                // Add capture filter to graph
                 filterGraph.AddFilter(captureFilter, "Video Capture");
 
-                // Create and add sample grabber
+                // Создаем SampleGrabber
                 sampleGrabberFilter = (IBaseFilter)new SampleGrabber();
                 sampleGrabber = (ISampleGrabber)sampleGrabberFilter;
 
-                // Configure sample grabber
-                AMMediaType media = new AMMediaType();
-                media.majorType = MediaType.Video;
-                media.subType = MediaSubType.RGB24;
+                // Настраиваем формат
+                AMMediaType media = new AMMediaType
+                {
+                    majorType = MediaType.Video,
+                    subType = MediaSubType.RGB24,
+                    formatType = FormatType.VideoInfo
+                };
                 sampleGrabber.SetMediaType(media);
+
+                sampleGrabber.SetBufferSamples(true);
+                sampleGrabber.SetCallback(null, 0);
 
                 filterGraph.AddFilter(sampleGrabberFilter, "Sample Grabber");
 
-                // Connect filters
+                // Соединяем фильтры
                 IPin outPin = DsFindPin.ByDirection(captureFilter, PinDirection.Output, 0);
                 IPin inPin = DsFindPin.ByDirection(sampleGrabberFilter, PinDirection.Input, 0);
                 filterGraph.Connect(outPin, inPin);
 
-                // Start preview
+                // Запускаем граф
                 mediaControl.Run();
+
+                // Получаем параметры кадра
+                AMMediaType connectedMedia = new AMMediaType();
+                sampleGrabber.GetConnectedMediaType(connectedMedia);
+                if ((connectedMedia.formatType != FormatType.VideoInfo) || (connectedMedia.formatPtr == IntPtr.Zero))
+                    throw new Exception("Unsupported media type");
+
+                VideoInfoHeader vih = (VideoInfoHeader)Marshal.PtrToStructure(connectedMedia.formatPtr, typeof(VideoInfoHeader));
+                videoWidth = vih.BmiHeader.Width;
+                videoHeight = vih.BmiHeader.Height;
+
+                DsUtils.FreeAMMediaType(connectedMedia);
 
                 lastError = "";
                 return true;
@@ -105,11 +122,6 @@ namespace WebCameraCSharp
                 lastError = ex.Message;
                 return false;
             }
-        }
-
-        public byte[] GetLastFrameData()
-        {
-            return lastFrameData;
         }
 
         public byte[] CaptureFrame()
@@ -123,30 +135,26 @@ namespace WebCameraCSharp
                 }
 
                 int bufferSize = 0;
-
-                // First, get the size of the buffer
                 int hr = sampleGrabber.GetCurrentBuffer(ref bufferSize, IntPtr.Zero);
                 if (hr != 0 || bufferSize <= 0)
                 {
-                    lastError = "Failed to get buffer size";
+                    lastError = $"Failed to get buffer size, hr={hr}";
                     return new byte[0];
                 }
 
-                // Allocate the buffer and retrieve the frame data
                 IntPtr bufferPtr = Marshal.AllocCoTaskMem(bufferSize);
                 try
                 {
                     hr = sampleGrabber.GetCurrentBuffer(ref bufferSize, bufferPtr);
                     if (hr != 0)
                     {
-                        lastError = "Failed to capture frame";
+                        lastError = $"Failed to capture frame, hr={hr}";
                         return new byte[0];
                     }
 
                     byte[] frameData = new byte[bufferSize];
                     Marshal.Copy(bufferPtr, frameData, 0, bufferSize);
 
-                    // Convert to JPEG
                     return ConvertToJpeg(frameData);
                 }
                 finally
@@ -161,19 +169,39 @@ namespace WebCameraCSharp
             }
         }
 
+        private byte[] ConvertToJpeg(byte[] rgbData)
+        {
+            try
+            {
+                Bitmap bmp = new Bitmap(videoWidth, videoHeight, PixelFormat.Format24bppRgb);
+                BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, videoWidth, videoHeight),
+                    ImageLockMode.WriteOnly, bmp.PixelFormat);
+
+                Marshal.Copy(rgbData, 0, bmpData.Scan0, rgbData.Length);
+                bmp.UnlockBits(bmpData);
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bmp.Save(ms, ImageFormat.Jpeg);
+                    return ms.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                lastError = "JPEG conversion failed: " + ex.Message;
+                return new byte[0];
+            }
+        }
+
         public string[] GetDeviceList()
         {
             try
             {
-                List<string> devices = new List<string>();
-
-                foreach (DsDevice dev in videoCaptureDevices)
-                {
-                    devices.Add(dev.Name);
-                }
-
+                var devices = new string[videoCaptureDevices.Length];
+                for (int i = 0; i < videoCaptureDevices.Length; i++)
+                    devices[i] = videoCaptureDevices[i].Name;
                 lastError = "";
-                return devices.ToArray();
+                return devices;
             }
             catch (Exception ex)
             {
@@ -184,88 +212,41 @@ namespace WebCameraCSharp
 
         public bool SetCamera(int index)
         {
-            try
+            if (index < 0 || index >= videoCaptureDevices.Length)
             {
-                if (index < 0 || index >= videoCaptureDevices.Length)
-                {
-                    lastError = "Invalid camera index";
-                    return false;
-                }
-
-                selectedCameraIndex = index;
-                Cleanup();
-                Initialize();
-
-                lastError = "";
-                return true;
-            }
-            catch (Exception ex)
-            {
-                lastError = ex.Message;
+                lastError = "Invalid camera index";
                 return false;
             }
+            selectedCameraIndex = index;
+            Cleanup();
+            return Initialize();
         }
 
-        public string GetErrorMessage()
-        {
-            return lastError;
-        }
+        public string GetErrorMessage() => lastError;
 
-        public int GetCameraCount()
-        {
-            return videoCaptureDevices.Length;
-        }
+        public int GetCameraCount() => videoCaptureDevices.Length;
 
         public void Cleanup()
         {
             try
             {
                 if (mediaControl != null)
-                {
                     mediaControl.Stop();
-                }
 
                 if (captureFilter != null)
-                {
                     Marshal.ReleaseComObject(captureFilter);
-                    captureFilter = null;
-                }
-
                 if (sampleGrabberFilter != null)
-                {
                     Marshal.ReleaseComObject(sampleGrabberFilter);
-                    sampleGrabberFilter = null;
-                }
-
                 if (filterGraph != null)
-                {
                     Marshal.ReleaseComObject(filterGraph);
-                    filterGraph = null;
-                }
 
+                captureFilter = null;
+                sampleGrabberFilter = null;
+                filterGraph = null;
                 sampleGrabber = null;
                 mediaControl = null;
             }
             catch { }
-        }
-
-        private byte[] ConvertToJpeg(byte[] rgbData)
-        {
-            try
-            {
-                // Simplified JPEG conversion
-                // In production, use a proper image processing library
-                using (var ms = new MemoryStream())
-                {
-                    // Placeholder for JPEG encoding
-                    return ms.ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                lastError = "JPEG conversion failed: " + ex.Message;
-                return new byte[0];
-            }
         }
     }
 }
