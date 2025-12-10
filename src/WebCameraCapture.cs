@@ -2,10 +2,11 @@
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 using System.IO;
 using DirectShowLib;
 
-namespace WebCameraCSharp
+namespace AsterWebCamTo1C
 {
     [ComVisible(true)]
     [Guid("12345678-1234-1234-1234-123456789012")]
@@ -31,12 +32,18 @@ namespace WebCameraCSharp
 
         [DispId(7)]
         int GetCameraCount();
+
+        [DispId(8)]
+        byte[] CaptureFrameWithSize(int width, int height);
+
+        [DispId(9)]
+        bool InitializeWithCamera(int cameraIndex);
     }
 
     [ComVisible(true)]
     [Guid("87654321-4321-4321-4321-210987654321")]
     [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("WebCameraCapture.WebCameraCapture")]
+    [ProgId("AsterWebCamTo1C.WebCameraCapture")]
     public class WebCameraCapture : IWebCameraCapture
     {
         private IFilterGraph2 filterGraph;
@@ -57,6 +64,11 @@ namespace WebCameraCSharp
 
         public bool Initialize()
         {
+            return InitializeWithCamera(selectedCameraIndex);
+        }
+
+        public bool InitializeWithCamera(int cameraIndex)
+        {
             try
             {
                 if (videoCaptureDevices.Length == 0)
@@ -64,6 +76,14 @@ namespace WebCameraCSharp
                     lastError = "No video capture devices found";
                     return false;
                 }
+
+                if (cameraIndex < 0 || cameraIndex >= videoCaptureDevices.Length)
+                {
+                    lastError = $"Invalid camera index: {cameraIndex}. Available cameras: 0-{videoCaptureDevices.Length - 1}";
+                    return false;
+                }
+
+                selectedCameraIndex = cameraIndex;
 
                 filterGraph = (IFilterGraph2)new FilterGraph();
                 mediaControl = (IMediaControl)filterGraph;
@@ -124,7 +144,19 @@ namespace WebCameraCSharp
             }
         }
 
+        // Метод без параметров для совместимости с интерфейсом
         public byte[] CaptureFrame()
+        {
+            return CaptureFrameInternal(0, 0);
+        }
+
+        // Метод с размерами
+        public byte[] CaptureFrameWithSize(int width, int height)
+        {
+            return CaptureFrameInternal(width, height);
+        }
+
+        private byte[] CaptureFrameInternal(int newWidth, int newHeight)
         {
             try
             {
@@ -155,7 +187,7 @@ namespace WebCameraCSharp
                     byte[] frameData = new byte[bufferSize];
                     Marshal.Copy(bufferPtr, frameData, 0, bufferSize);
 
-                    return ConvertToJpeg(frameData);
+                    return ConvertToJpeg(frameData, newWidth, newHeight);
                 }
                 finally
                 {
@@ -169,20 +201,43 @@ namespace WebCameraCSharp
             }
         }
 
-        private byte[] ConvertToJpeg(byte[] rgbData)
+        private byte[] ConvertToJpeg(byte[] rgbData, int newWidth, int newHeight)
         {
+            Bitmap bmp = null;
+            Bitmap resizedBmp = null;
+
             try
             {
-                Bitmap bmp = new Bitmap(videoWidth, videoHeight, PixelFormat.Format24bppRgb);
+                bmp = new Bitmap(videoWidth, videoHeight, PixelFormat.Format24bppRgb);
                 BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, videoWidth, videoHeight),
                     ImageLockMode.WriteOnly, bmp.PixelFormat);
 
                 Marshal.Copy(rgbData, 0, bmpData.Scan0, rgbData.Length);
                 bmp.UnlockBits(bmpData);
 
+                // Переворачиваем изображение
+                bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
+                // Определяем финальное изображение для сохранения
+                Bitmap finalBmp = bmp;
+
+                // Если указаны размеры, изменяем размер
+                if (newWidth > 0 && newHeight > 0)
+                {
+                    resizedBmp = new Bitmap(newWidth, newHeight);
+                    using (Graphics g = Graphics.FromImage(resizedBmp))
+                    {
+                        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        g.SmoothingMode = SmoothingMode.HighQuality;
+                        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        g.DrawImage(bmp, 0, 0, newWidth, newHeight);
+                    }
+                    finalBmp = resizedBmp;
+                }
+
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    bmp.Save(ms, ImageFormat.Jpeg);
+                    finalBmp.Save(ms, ImageFormat.Jpeg);
                     return ms.ToArray();
                 }
             }
@@ -190,6 +245,13 @@ namespace WebCameraCSharp
             {
                 lastError = "JPEG conversion failed: " + ex.Message;
                 return new byte[0];
+            }
+            finally
+            {
+                if (bmp != null)
+                    bmp.Dispose();
+                if (resizedBmp != null)
+                    resizedBmp.Dispose();
             }
         }
 

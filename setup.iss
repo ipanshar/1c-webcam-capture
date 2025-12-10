@@ -1,10 +1,10 @@
-; Скрипт установки для WebCameraCapture с проверкой и установкой .NET Framework
+; Скрипт установки для AsterWebCamTo1C с проверкой и установкой .NET Framework
 ; Требует Inno Setup 6.0+
 
-#define MyAppName "WebCameraCapture 1C Component"
+#define MyAppName "AsterWebCamTo1C Component"
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "ipanshar"
-#define MyDllName "WebCameraCapture.dll"
+#define MyDllName "AsterWebCamTo1C.dll"
 ; Имя файла установщика .NET (должен лежать в папке redist рядом со скриптом)
 #define DotNetInstallerName "NDP472-KB4054530-x86-x64-AllOS-ENU.exe"
 
@@ -16,7 +16,7 @@ AppPublisher={#MyAppPublisher}
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputDir=installer
-OutputBaseFilename=WebCameraCapture_Setup
+OutputBaseFilename=AsterWebCamTo1C_Setup
 Compression=lzma
 SolidCompression=yes
 ; Нужны права админа для регистрации COM и установки .NET
@@ -31,7 +31,7 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Source: "bin\Release\net472\{#MyDllName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net472\DirectShowLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; PDB файл можно добавить, если очень нужно, раскомментировав строку ниже:
-; Source: "bin\Release\net472\WebCameraCapture.pdb"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "bin\Release\net472\AsterWebCamTo1C.pdb"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Установщик .NET Framework (будет упакован внутрь вашего setup.exe)
 Source: "redist\{#DotNetInstallerName}"; DestDir: "{tmp}"; Flags: deleteafterinstall
@@ -76,7 +76,7 @@ begin
         if MsgBox('Для работы программы требуется Microsoft .NET Framework 4.7.2.' + #13#10 +
                   'Он будет установлен сейчас. Это может занять несколько минут.', mbConfirmation, MB_YESNO) = IDYES then
         begin
-            // Извлекаем файл установщика .NET из нашего setup.exe во временную папку
+            // Извлекаем файл установщика .NET из нашего setup.exe во времнюю папку
             ExtractTemporaryFile('{#DotNetInstallerName}');
 
             // Запускаем установку .NET в тихом режиме (/q /norestart)

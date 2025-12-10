@@ -1,0 +1,12 @@
+D:\visualStudio\Camera\bin\Debug\net472\AsterWebCamTo1C.dll
+D:\visualStudio\Camera\bin\Debug\net472\AsterWebCamTo1C.pdb
+D:\visualStudio\Camera\bin\Debug\net472\DirectShowLib.dll
+D:\visualStudio\Camera\obj\Debug\net472\AsterWebCamTo1C.csproj.AssemblyReference.cache
+D:\visualStudio\Camera\obj\Debug\net472\AsterWebCamTo1C.GeneratedMSBuildEditorConfig.editorconfig
+D:\visualStudio\Camera\obj\Debug\net472\AsterWebCamTo1C.AssemblyInfoInputs.cache
+D:\visualStudio\Camera\obj\Debug\net472\AsterWebCamTo1C.AssemblyInfo.cs
+D:\visualStudio\Camera\obj\Debug\net472\AsterWebCamTo1C.csproj.CoreCompileInputs.cache
+D:\visualStudio\Camera\obj\Debug\net472\AsterWebCamTo1C.sourcelink.json
+D:\visualStudio\Camera\obj\Debug\net472\AsterWeb.A30FB5A0.Up2Date
+D:\visualStudio\Camera\obj\Debug\net472\AsterWebCamTo1C.dll
+D:\visualStudio\Camera\obj\Debug\net472\AsterWebCamTo1C.pdb

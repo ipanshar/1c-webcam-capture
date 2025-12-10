@@ -13,11 +13,11 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("ipanshar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
-[assembly: System.Reflection.AssemblyDescriptionAttribute("C# DLL для захвата видео с веб-камеры для 1С:Предприятие")]
+[assembly: System.Reflection.AssemblyDescriptionAttribute("C# DLL для захвата видео с веб-камеры для 1С:Предприятие (Aster edition)")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b8d012c15955c7c9a87e73797e500cf3badc3665")]
-[assembly: System.Reflection.AssemblyProductAttribute("WebCameraCapture")]
-[assembly: System.Reflection.AssemblyTitleAttribute("WebCameraCapture")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+730b61d904d973526049750d8aa54173f8c62019")]
+[assembly: System.Reflection.AssemblyProductAttribute("AsterWebCamTo1C")]
+[assembly: System.Reflection.AssemblyTitleAttribute("AsterWebCamTo1C")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.

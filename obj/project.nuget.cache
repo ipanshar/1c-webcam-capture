@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "b0RhsKIoRcI=",
+  "dgSpecHash": "y+g1M7sPIkg=",
   "success": true,
-  "projectFilePath": "D:\\visualStudio\\Camera\\WebCameraCSharp.csproj",
+  "projectFilePath": "D:\\visualStudio\\Camera\\AsterWebCamTo1C.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Админ\\.nuget\\packages\\directshowlib.standard\\2.1.0\\directshowlib.standard.2.1.0.nupkg.sha512"
   ],

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>AsterWebCamTo1C</AssemblyName>
+    <RootNamespace>AsterWebCamTo1C</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>ipanshar</Authors>
+    <Description>C# DLL для захвата видео с веб-камеры для 1С:Предприятие (Aster edition)</Description>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <ComVisible>true</ComVisible>
+    <Guid>87654321-4321-4321-4321-210987654321</Guid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DirectShowLib.Standard" Version="2.1.0" />
+  </ItemGroup>
+
+</Project>
